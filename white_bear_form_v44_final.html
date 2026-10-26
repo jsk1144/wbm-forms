@@ -4296,8 +4296,10 @@ updatePreview();
 
 // ── Auto-resize iframe on Squarespace ────────────────────────
 function notifyHeight() {
-  var h = document.documentElement.scrollHeight;
-  window.parent.postMessage({wbmHeight: h}, '*');
+  // Use the wrap div's actual height, not scrollHeight which can overshoot
+  var wrap = document.querySelector('.wrap');
+  var h = wrap ? wrap.offsetHeight + 48 : document.documentElement.offsetHeight;
+  window.parent.postMessage({wbmHeight: h, scrollToTop: true}, '*');
 }
 // Fire on load and after every render
 var _origRender = render;
