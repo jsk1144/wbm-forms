@@ -165,7 +165,7 @@ textarea.inp{resize:vertical;min-height:80px}
 </head>
 <body>
 <div class="wrap">
-  <div class="wrap-sidebar">
+  <div class="wrap-sidebar" id="wrap-sidebar" style="visibility:hidden">
 
 <div id="mocc-preview" style="background:#ffffff;border-radius:12px;padding:10px;margin-bottom:0;border:1px solid #d6c9be">
   <div style="font-size:10px;color:#767365;font-family:system-ui;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;text-align:center">Live preview — Chukka</div>
@@ -4253,6 +4253,20 @@ function submitOrder(){
 
 render();
 updatePreview();
+// Reveal sidebar now that first render is done (hidden on load to prevent SVG flash)
+(function(){ var sb=document.getElementById('wrap-sidebar'); if(sb) sb.style.visibility='visible'; })();
+
+// ── Auto-resize iframe on Squarespace ────────────────────────
+function notifyHeight() {
+  var h = document.documentElement.scrollHeight;
+  window.parent.postMessage({wbmHeight: h}, '*');
+}
+// Fire on load and after every render
+var _origRender = render;
+render = function() { _origRender(); setTimeout(notifyHeight, 50); };
+window.addEventListener('load', notifyHeight);
+window.addEventListener('resize', notifyHeight);
+notifyHeight();
 </script>
 </body>
 </html>
